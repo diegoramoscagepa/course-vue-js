@@ -1,5 +1,5 @@
 ### Course-vue-js
-Course about vuejs
+Curso vuejs
 
 ###  Iniciar projeto vue-js
 npm create vue@latest <my-project-vue>
