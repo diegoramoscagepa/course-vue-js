@@ -1,9 +1,48 @@
-<div id="app">
-    <button @click="increment">Clique-me: {{ count }}</button>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicação Vue.js</title>
+  <!-- Carrega Vue.js primeiro -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- CSS opcional -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #app {
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #42b983;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #369f6e;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nosso template Vue no DOM -->
+  <div id="app">
+    <button @click="increment">{{ buttonText }}: {{ count }}</button>
     <p v-if="count > 0">Você clicou {{ count }} {{ count === 1 ? 'vez' : 'vezes' }}</p>
     <p v-else>Nenhum clique ainda</p>
-    
-    <div v-show="count > 5" style="margin-top: 20px; color: #ff4757;">
-      Você está clicando muito!
-    </div>
   </div>
+
+  <!-- Carrega nosso JavaScript DEPOIS do Vue e do DOM -->
+  <script src="app.js"></script>
+</body>
+</html>
