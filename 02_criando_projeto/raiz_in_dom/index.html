@@ -1,0 +1,9 @@
+<div id="app">
+    <button @click="increment">Clique-me: {{ count }}</button>
+    <p v-if="count > 0">Você clicou {{ count }} {{ count === 1 ? 'vez' : 'vezes' }}</p>
+    <p v-else>Nenhum clique ainda</p>
+    
+    <div v-show="count > 5" style="margin-top: 20px; color: #ff4757;">
+      Você está clicando muito!
+    </div>
+  </div>
