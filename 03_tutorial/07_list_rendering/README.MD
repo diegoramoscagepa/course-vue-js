@@ -1,4 +1,5 @@
-List Rendering
+## List Rendering
+
 We can use the v-for directive to render a list of elements based on a source array:
 
 template
