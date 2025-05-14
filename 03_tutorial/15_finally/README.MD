@@ -1,18 +1,13 @@
-## Slots
+## You Did It!
 
-In addition to passing data via props, the parent component can also pass down template fragments to the child via slots:
+You have finished the tutorial!
 
-template
-<ChildComp>
-  This is some slot content!
-</ChildComp>
-In the child component, it can render the slot content from the parent using the <slot> element as outlet:
+At this point, you should have a good idea of what it's like to work with Vue. However, we covered a lot of things really fast and glossed over the details, so definitely keep learning! As a next step, you can:
 
-template
-<!-- in child template -->
-<slot/>
-Content inside the <slot> outlet will be treated as "fallback" content: it will be displayed if the parent did not pass down any slot content:
+Set up a real Vue project on your machine by following the Quick Start.
 
-template
-<slot>Fallback content</slot>
-Currently we are not passing any slot content to <ChildComp>, so you should see the fallback content. Let's provide some slot content to the child while making use of the parent's msg state.
+Go through the Main Guide, which covers all the topics we learned so far in greater details, and much more.
+
+Check out some more practical Examples.
+
+We can't wait to see what you build next!
