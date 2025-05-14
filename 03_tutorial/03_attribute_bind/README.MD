@@ -12,4 +12,4 @@ Because v-bind is used so frequently, it has a dedicated shorthand syntax:
 
 template
 <div :id="dynamicId"></div>
-Now, try to add a dynamic class binding to the <h1></h1>, using the titleClass ref as its value. If it's bound correctly, the text should turn red.
+Now, try to add a dynamic class binding to the <!--<h1></h1>-->, using the titleClass ref as its value. If it's bound correctly, the text should turn red.
