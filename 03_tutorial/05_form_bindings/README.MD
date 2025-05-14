@@ -1,4 +1,5 @@
-Form Bindings
+## Form Bindings
+
 Using v-bind and v-on together, we can create two-way bindings on form input elements:
 
 template
