@@ -1,25 +1,15 @@
-## Lifecycle and Template Refs
-
-So far, Vue has been handling all the DOM updates for us, thanks to reactivity and declarative rendering. However, inevitably there will be cases where we need to manually work with the DOM.
-
-We can request a template ref - i.e. a reference to an element in the template - using the special ref attribute:
-
-template
-<p ref="pElementRef">hello</p>
-To access the ref, we need to declare a ref with matching name:
+## Watchers
+Sometimes we may need to perform "side effects" reactively - for example, logging a number to the console when it changes. We can achieve this with watchers:
 
 js
-const pElementRef = ref(null)
-Notice the ref is initialized with null value. This is because the element doesn't exist yet when <script setup> is executed. The template ref is only accessible after the component is mounted.
+import { ref, watch } from 'vue'
 
-To run code after mount, we can use the onMounted() function:
+const count = ref(0)
 
-js
-import { onMounted } from 'vue'
-
-onMounted(() => {
-  // component is now mounted.
+watch(count, (newCount) => {
+  // yes, console.log() is a side effect
+  console.log(`new count is: ${newCount}`)
 })
-This is called a lifecycle hook - it allows us to register a callback to be called at certain times of the component's lifecycle. There are other hooks such as onUpdated and onUnmounted. Check out the Lifecycle Diagram for more details.
+watch() can directly watch a ref, and the callback gets fired whenever count's value changes. watch() can also watch other types of data sources - more details are covered in Guide - Watchers.
 
-Now, try to add an onMounted hook, access the <p> via pElementRef.value, and perform some direct DOM operations on it (e.g. changing its textContent).
+A more practical example than logging to the console would be fetching new data when an ID changes. The code we have is fetching todos data from a mock API on component mount. There is also a button that increments the todo ID that should be fetched. Try to implement a watcher that fetches a new todo when the button is clicked.
