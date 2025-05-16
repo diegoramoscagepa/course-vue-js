@@ -32,4 +32,21 @@ npm run build
 
 ```sh
 npm run lint
+
 ```
+
+### Axios
+
+```sh
+npm install axios
+
+```
+
+### Dotenv
+
+```sh
+npm install dotenv
+```
+
+
+
