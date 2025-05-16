@@ -1,0 +1,36 @@
+Modelagem conceitual banco de dados
+
+Entidades:
+
+cliente {
+    id_funcionario 
+    nome
+    habilitação
+    data_nascimento
+}
+
+carro {
+    placa
+    modelo
+    valor
+    cor
+}
+
+funcionario {
+    matricula
+    nome
+    data_nascimento
+}
+
+nota_locacao {
+
+}
+
+nota_devolucao {
+    
+}
+
+
+
+
+
