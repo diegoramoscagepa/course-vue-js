@@ -1,100 +1,22 @@
+<script setup>
+
+</script>
+
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Acesse sua conta
-        </h2>
-      </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label for="email" class="sr-only">Email</label>
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Seu email"
-            />
-          </div>
-          <div>
-            <label for="password" class="sr-only">Senha</label>
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Sua senha"
-            />
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="remember"
-              v-model="remember"
-              type="checkbox"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label for="remember" class="ml-2 block text-sm text-gray-900">
-              Lembrar de mim
-            </label>
-          </div>
-
-          <div class="text-sm">
-            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-              Esqueceu a senha?
-            </a>
-          </div>
-        </div>
-
+  <div>
+    <!-- container da página -->
+    <div class="w-screen h-screen bg-slate-100">
+      <!-- balão de notificação -->
+      <div class="p-4 max-w-sm mx-auto bg-white rounded-xl shadow-lg">
         <div>
-          <button
-            type="submit"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Entrar
-          </button>
+          <h3 class="text-xl font-medium text-black">Notification</h3>
+          <p class="text-slate-500">You have a new message!</p>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App',
-  data() {
-    return {
-      email: '',
-      password: '',
-      remember: false
-    }
-  },
-  methods: {
-    handleLogin() {
-      // Validação básica
-      if (!this.email || !this.password) {
-        alert('Por favor, preencha todos os campos.')
-        return
-      }
-      
-      // Simulação de login
-      console.log('Tentativa de login:', {
-        email: this.email,
-        password: this.password,
-        remember: this.remember
-      })
-      
-      alert(`Bem-vindo, ${this.email.split('@')[0]}!`)
-      
-      // Aqui você normalmente faria uma chamada à API
-      // e redirecionaria após o login bem-sucedido
-    }
-  }
-}
-</script>
+<style scoped>
+
+</style>
