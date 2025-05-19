@@ -29,6 +29,11 @@ coverage
 
 *.tsbuildinfo
 
+
+# Dotenv
 .env*.local
 .env
 .env*
+.env.development
+.env.staging
+.env.production
