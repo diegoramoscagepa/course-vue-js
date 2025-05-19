@@ -16,9 +16,8 @@ const fetchUsers = async () => {
 
   try {
 
-    const auth = btoa('API:SGST2025');
+    const auth = btoa(import.meta.env.VITE_APP_KEY_API_TOTVS);
 
-    console.log(auth, import.meta.env.KEY_API_TOTVS)
     const headers = {
       'Accept': '*/*',
       'Authorization': `Basic ${auth}`,
@@ -33,9 +32,7 @@ const fetchUsers = async () => {
     });
 
     dados.value = response.data;
-    dados.value = response.data;
 
-    console.log(response.data)
   } catch (err) {
     handleError(err);
     console.log(err)
@@ -82,10 +79,12 @@ onMounted(fetchUsers)
         <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
       </div>
 
-      <div v-if="dados.length > 0" class="user-grid">
-        <div v-for="dado in dados" :key="dado.id" class="user-card">
-          <h3>{{ dado }}</h3>
-          <p><i class="fas fa-envelope"></i> {{ dado }}</p>
+      <div>{{ dados.APIGEN.ITEM[0] }}</div>
+
+      <div v-if="dados.APIGEN.ITEM.length > 0" class="user-grid">
+        <div v-for="dado in dados.APIGEN.ITEM" :key="dado.id" class="user-card">
+          <h3>{{ dado.ITEM }}</h3>
+          <p><i class="fas fa-envelope"></i> {{ dado.E2_NUM }}</p>
           <p><i class="fas fa-phone"></i> {{ dado }}</p>
           <p><i class="fas fa-globe"></i> {{ dado }}</p>
         </div>
