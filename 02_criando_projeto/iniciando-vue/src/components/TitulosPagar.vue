@@ -1,166 +1,266 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import api from '@/services/api';
+
+
+
+
+const dados = ref([]);
+const isLoading = ref(false);
+const error = ref(null);
+
+
+const fetchUsers = async () => {
+  isLoading.value = true;
+  error.value = null;
+
+  try {
+
+    const auth = btoa('API:SGST2025');
+
+    console.log(auth, import.meta.env.KEY_API_TOTVS)
+    const headers = {
+      'Accept': '*/*',
+      'Authorization': `Basic ${auth}`,
+      'tenantid': '01,01SEDE0001',
+      'Content-Type': 'application/json'
+    };
+
+
+    const response = await api.get('/rest/API/INTEGRACAO/GENERICA', {
+      params: { cCodIntegracao: '000024' },
+      headers: headers
+    });
+
+    dados.value = response.data;
+    dados.value = response.data;
+
+    console.log(response.data)
+  } catch (err) {
+    handleError(err);
+    console.log(err)
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+
+
+const handleError = (err) => {
+
+  if (err.response) {
+    error.value = `Erro ${err.response.status}: ${err.response.data.message || 'Falha na requisição'}`;
+  } else if (err.request) {
+    error.value = 'Servidor não respondeu. Verifique sua conexão.';
+  } else {
+    error.value = 'Erro ao configurar a requisição';
+  }
+  console.error('Detalhes do erro:', err);
+}
+
+onMounted(fetchUsers)
+
+</script>
+
+
 <template>
-  <div class="user-list">
-    <h1>Lista de Usuários</h1>
+  <div class="user-list-container">
+    <div class="user-list-content">
+      <h1 class="title">Titulos a pagar</h1>
 
-    <button
-      @click="fetchUsers"
-      :disabled="isLoading"
-      class="fetch-button"
-    >
-      <span v-if="isLoading">
-        <i class="fas fa-spinner fa-spin"></i> Carregando...
-      </span>
-      <span v-else>
-        <i class="fas fa-sync-alt"></i> Atualizar Lista
-      </span>
-    </button>
+      <button @click="fetchUsers" :disabled="isLoading" class="fetch-button">
+        <span v-if="isLoading">
+          <i class="fas fa-spinner fa-spin"></i> Carregando...
+        </span>
+        <span v-else>
+          <i class="fas fa-sync-alt"></i> Atualizar Lista
+        </span>
+      </button>
 
-    <div v-if="error" class="error-message">
-      <i class="fas fa-exclamation-triangle"></i> {{ error }}
-      <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
-    </div>
-
-    <div v-if="users.length > 0" class="user-grid">
-      <div v-for="user in users" :key="user.id" class="user-card">
-        <h3>{{ user.name }}</h3>
-        <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
-        <p><i class="fas fa-phone"></i> {{ user.phone }}</p>
-        <p><i class="fas fa-globe"></i> {{ user.website }}</p>
+      <div v-if="error" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+        <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
       </div>
-    </div>
 
-    <div v-if="!isLoading && users.length === 0 && !error" class="empty-state">
-      Nenhum usuário encontrado
+      <div v-if="dados.length > 0" class="user-grid">
+        <div v-for="dado in dados" :key="dado.id" class="user-card">
+          <h3>{{ dado }}</h3>
+          <p><i class="fas fa-envelope"></i> {{ dado }}</p>
+          <p><i class="fas fa-phone"></i> {{ dado }}</p>
+          <p><i class="fas fa-globe"></i> {{ dado }}</p>
+        </div>
+      </div>
+
+      <div v-if="!isLoading && dados.length === 0 && !error" class="empty-state">
+        Nenhum usuário encontrado
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import api from '@/services/api';
-
-export default {
-  name: 'UserList',
-  data() {
-    return {
-      users: [],
-      isLoading: false,
-      error: null,
-    };
-  },
-  created() {
-    // Carrega os dados quando o componente é criado
-    this.fetchUsers();
-  },
-  methods: {
-    async fetchUsers() {
-      this.isLoading = true;
-      this.error = null;
-
-      try {
-        // Usa a variável de ambiente para o endpoint
-        const endpoint = import.meta.env.VUE_APP_USERS_ENDPOINT;
-        const response = await api.get(endpoint);
-
-        this.users = response.data.slice(0, 6); // Limita a 6 usuários para exemplo
-      } catch (err) {
-        this.handleError(err);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-    handleError(error) {
-      if (error.response) {
-        // Erro da API (4xx, 5xx)
-        this.error = `Erro ${error.response.status}: ${error.response.data.message || 'Falha na requisição'}`;
-      } else if (error.request) {
-        // Sem resposta do servidor
-        this.error = 'Servidor não respondeu. Verifique sua conexão.';
-      } else {
-        // Erro na configuração da requisição
-        this.error = 'Erro ao configurar a requisição';
-      }
-
-      console.error('Detalhes do erro:', error);
-    }
-  }
-};
-</script>
 
 <style scoped>
-.user-list {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+.user-list-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  min-width: 100vh;
 }
+
+
+
+.user-list-content {
+  width: 100%;
+  max-width: 1200px;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  align-items: center;
+  color: #141414;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+
 
 .fetch-button {
   background-color: #42b983;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 20px;
+  font-size: 1rem;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
 }
+
+
+.fetch-button:hover:not(:disabled) {
+  background-color: #3aa876;
+  transform: translateY(-2px);
+}
+
 
 .fetch-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+  opacity: 0.8;
 }
 
+
 .error-message {
-  color: #ff4444;
-  background-color: #ffebee;
-  padding: 15px;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 0 auto 1.5rem;
+  max-width: 600px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .retry-button {
-  margin-left: 15px;
   background: none;
-  border: 1px solid #ff4444;
-  color: #ff4444;
-  padding: 5px 10px;
-  border-radius: 3px;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.retry-button:hover {
+  background-color: #dc3545;
+  color: white;
 }
 
 .user-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .user-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+  border: 1px solid #e9ecef;
+}
+
+.user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .user-card h3 {
-  margin-top: 0;
+  margin: 0 0 1rem 0;
   color: #2c3e50;
+  font-size: 1.25rem;
 }
 
 .user-card p {
-  margin: 8px 0;
-  color: #666;
+  margin: 0.5rem 0;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 18px;
+  padding: 2rem;
+  color: #6c757d;
+  font-size: 1.1rem;
 }
 
 .fa-spinner {
-  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .user-list-container {
+    padding: 1rem;
+  }
+
+  .user-list-content {
+    padding: 1.5rem;
+  }
+
+  .user-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
 }
 </style>
