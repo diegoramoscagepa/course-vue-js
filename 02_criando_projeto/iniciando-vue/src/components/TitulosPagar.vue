@@ -2,23 +2,17 @@
 import { ref, onMounted } from 'vue';
 import api from '@/services/api';
 
-
-
-
 const dados = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
-
 
 const fetchUsers = async () => {
   isLoading.value = true;
   error.value = null;
 
-
-
   try {
 
-    const response = await api.get('/rest/API/INTEGRACAO/GENERICA', {
+    const response = await api.get(import.meta.env.VITE_APP_API_ENDPOINT, {
       params: { cCodIntegracao: '000024' },
     });
 
@@ -110,6 +104,43 @@ onMounted(fetchUsers)
   padding: 1rem;
   background-color: #f8f9fa;
   min-width: 100vh;
+}
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.data-table th {
+  background-color: #42b983;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.data-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.data-table tr:nth-child(even) {
+  background-color: #f8f9fa;
 }
 
 
@@ -251,6 +282,17 @@ onMounted(fetchUsers)
 @media (max-width: 768px) {
   .user-list-container {
     padding: 1rem;
+  }
+
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
   }
 
   .user-list-content {
