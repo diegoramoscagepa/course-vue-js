@@ -14,24 +14,16 @@ const fetchUsers = async () => {
   isLoading.value = true;
   error.value = null;
 
+
+
   try {
-
-    const auth = btoa(import.meta.env.VITE_APP_KEY_API_TOTVS);
-
-    const headers = {
-      'Accept': '*/*',
-      'Authorization': `Basic ${auth}`,
-      'tenantid': '01,01SEDE0001',
-      'Content-Type': 'application/json'
-    };
-
 
     const response = await api.get('/rest/API/INTEGRACAO/GENERICA', {
       params: { cCodIntegracao: '000024' },
-      headers: headers
     });
 
     dados.value = response.data;
+
 
   } catch (err) {
     handleError(err);
@@ -54,6 +46,7 @@ const handleError = (err) => {
   }
   console.error('Detalhes do erro:', err);
 }
+
 
 onMounted(fetchUsers)
 
@@ -79,19 +72,29 @@ onMounted(fetchUsers)
         <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
       </div>
 
-      <div>{{ dados.APIGEN.ITEM[0] }}</div>
+      <div v-if="dados && dados.APIGEN && dados.APIGEN.ITEM" class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Filial</th>
+              <th>Cód. Filial</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(dado, index) in dados.APIGEN.ITEM" :key="index">
+              <td>{{ dado.E2_NUM || 'N/A' }}</td>
+              <td>{{ dado.E2_FILIAL || 'N/A' }}</td>
+              <td>{{ dado.E2_TIPO || 'N/A' }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <div v-if="dados.APIGEN.ITEM.length > 0" class="user-grid">
-        <div v-for="dado in dados.APIGEN.ITEM" :key="dado.id" class="user-card">
-          <h3>{{ dado.ITEM }}</h3>
-          <p><i class="fas fa-envelope"></i> {{ dado.E2_NUM }}</p>
-          <p><i class="fas fa-phone"></i> {{ dado }}</p>
-          <p><i class="fas fa-globe"></i> {{ dado }}</p>
-        </div>
       </div>
 
+
       <div v-if="!isLoading && dados.length === 0 && !error" class="empty-state">
-        Nenhum usuário encontrado
+        Nenhum título a pagar carregado!
       </div>
     </div>
   </div>
