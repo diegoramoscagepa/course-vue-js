@@ -5,6 +5,7 @@ import api from '@/services/api';
 const dados = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
+const itemsPerPage = 10;
 
 const fetchUsers = async () => {
   isLoading.value = true;
@@ -17,6 +18,7 @@ const fetchUsers = async () => {
     });
 
     dados.value = response.data;
+    console.log(dados.value.APIGEN.ITEM.length/itemsPerPage)
 
 
   } catch (err) {
@@ -27,6 +29,10 @@ const fetchUsers = async () => {
   }
 };
 
+const itensPage = () => {
+  if (!dados.value) return 0;
+  return dados.value.APIGEN.ITEM.length/itemsPerPage
+}
 
 
 const handleError = (err) => {
@@ -48,11 +54,13 @@ onMounted(fetchUsers)
 
 
 <template>
-  <div class="user-list-container">
-    <div class="user-list-content">
-      <h1 class="title">Titulos a pagar</h1>
+  <div class="min-h-screen bg-gray-50 p-4 flex justify-center items-start">
+    <div class="w-full max-w-6xl bg-white rounded-xl shadow-md p-6">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">Titulos a pagar</h1>
 
-      <button @click="fetchUsers" :disabled="isLoading" class="fetch-button">
+      <button @click="fetchUsers" :disabled="isLoading" class="bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium mb-6
+               hover:bg-emerald-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed
+               flex items-center gap-2 mx-auto">
         <span v-if="isLoading">
           <i class="fas fa-spinner fa-spin"></i> Carregando...
         </span>
@@ -61,25 +69,34 @@ onMounted(fetchUsers)
         </span>
       </button>
 
-      <div v-if="error" class="error-message">
+      <div v-if="error" class="bg-red-50 text-red-600 p-4 rounded-lg mb-6 flex items-center justify-center gap-2">
         <i class="fas fa-exclamation-triangle"></i> {{ error }}
         <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
       </div>
 
-      <div v-if="dados && dados.APIGEN && dados.APIGEN.ITEM" class="table-container">
-        <table class="data-table">
-          <thead>
+      <div v-if="dados && dados.APIGEN && dados.APIGEN.ITEM" class="overflow-x-auto shadow rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-emerald-500">
             <tr>
-              <th>Filial</th>
-              <th>Cód. Filial</th>
-              <th>Tipo</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Filial
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Cód.
+                Filial</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tipo
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(dado, index) in dados.APIGEN.ITEM" :key="index">
-              <td>{{ dado.E2_NUM || 'N/A' }}</td>
-              <td>{{ dado.E2_FILIAL || 'N/A' }}</td>
-              <td>{{ dado.E2_TIPO || 'N/A' }}</td>
+              <td class="px-6 py-4
+              whitespace-nowrap text-sm text-gray-800">
+                {{ dado.E2_NUM || 'N/A' }}</td>
+              <td class="px-6 py-4
+              whitespace-nowrap text-sm text-gray-800">
+                {{ dado.E2_FILIAL || 'N/A' }}</td>
+              <td class="px-6 py-4
+              whitespace-nowrap text-sm text-gray-800">
+              {{ dado.E2_TIPO || 'N/A' }}</td>
             </tr>
           </tbody>
         </table>
@@ -96,6 +113,7 @@ onMounted(fetchUsers)
 
 
 <style scoped>
+/*
 .user-list-container {
   display: flex;
   justify-content: center;
@@ -307,4 +325,5 @@ onMounted(fetchUsers)
     font-size: 1.5rem;
   }
 }
+  */
 </style>

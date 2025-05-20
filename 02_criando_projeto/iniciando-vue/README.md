@@ -46,7 +46,14 @@ npm install axios
 
 ```sh
 npm install dotenv
+
 ```
 
+### Tailwind with vite
+
+```sh
+npm install tailwindcss @tailwindcss/vite
+
+```
 
 
