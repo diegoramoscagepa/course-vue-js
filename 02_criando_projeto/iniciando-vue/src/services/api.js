@@ -10,9 +10,10 @@ const headers = {
 };
 
 const api = axios.create({
-  baseURL: "https://companhiade177829.protheus.cloudtotvs.com.br:4050", //import.meta.VITE_APP_API_BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000,
   headers: headers,
+  params: { cCodIntegracao: import.meta.env.VITE_COD_PARM_INTEG_TOTOVS }
 });
 
 api.interceptors.request.use((config) => {

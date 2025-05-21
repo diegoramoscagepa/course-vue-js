@@ -1,13 +1,11 @@
-<script setup>
+<script setup lang="js">
+import TitulosPagar from './components/TitulosPagar.vue';
 
-import TitulosPagar from './components/TitulosPagar.vue'
 
 </script>
 
 <template>
-    <TitulosPagar/>
+    <div class="card flex justify-center">
+        <TitulosPagar/>
+    </div>
 </template>
-
-<style scoped>
-
-</style>

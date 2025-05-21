@@ -56,4 +56,9 @@ npm install tailwindcss @tailwindcss/vite
 
 ```
 
+### Primevue
 
+```sh
+npm install primevue @primeuix/themes
+
+```

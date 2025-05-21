@@ -1,25 +1,38 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import api from '@/services/api';
 
 const dados = ref([]);
-const isLoading = ref(false);
+const isLoading = ref(true);
 const error = ref(null);
 const itemsPerPage = 10;
+const currentPage = ref(1);
+
+
+const totalPages = computed(() => {
+  if (!dados.value) return 0;
+  return Math.ceil(dados.value.APIGEN.ITEM.length / itemsPerPage)
+});
+
+const paginatedItems = computed(() => {
+  if (!dados.value?.APIGEN?.ITEM) return [];
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return dados.value.APIGEN.ITEM.slice(start, end);
+});
+
+const nextPage = () => currentPage.value++;
+const prevPage = () => currentPage.value--;
 
 const fetchUsers = async () => {
   isLoading.value = true;
   error.value = null;
+  currentPage.value = 1;
 
   try {
 
-    const response = await api.get(import.meta.env.VITE_APP_API_ENDPOINT, {
-      params: { cCodIntegracao: '000024' },
-    });
-
+    const response = await api.get(import.meta.env.VITE_APP_API_ENDPOINT);
     dados.value = response.data;
-    console.log(dados.value.APIGEN.ITEM.length/itemsPerPage)
-
 
   } catch (err) {
     handleError(err);
@@ -28,12 +41,6 @@ const fetchUsers = async () => {
     isLoading.value = false;
   }
 };
-
-const itensPage = () => {
-  if (!dados.value) return 0;
-  return dados.value.APIGEN.ITEM.length/itemsPerPage
-}
-
 
 const handleError = (err) => {
 
@@ -47,17 +54,21 @@ const handleError = (err) => {
   console.error('Detalhes do erro:', err);
 }
 
+const hasItems = computed(() => {
+  return dados.value && dados.value.APIGEN > 0
+});
 
-onMounted(fetchUsers)
+console.log(hasItems)
+
+onMounted(
+  fetchUsers
+)
 
 </script>
-
-
 <template>
   <div class="min-h-screen bg-gray-50 p-4 flex justify-center items-start">
     <div class="w-full max-w-6xl bg-white rounded-xl shadow-md p-6">
       <h1 class="text-2xl font-bold text-gray-800 mb-6">Titulos a pagar</h1>
-
       <button @click="fetchUsers" :disabled="isLoading" class="bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium mb-6
                hover:bg-emerald-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed
                flex items-center gap-2 mx-auto">
@@ -74,256 +85,56 @@ onMounted(fetchUsers)
         <button @click="fetchUsers" class="retry-button">Tentar novamente</button>
       </div>
 
-      <div v-if="dados && dados.APIGEN && dados.APIGEN.ITEM" class="overflow-x-auto shadow rounded-lg">
+      <div v-if="dados && dados.APIGEN && dados.APIGEN.ITEM" class="relative overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-emerald-500">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Filial
+              <th scope="col" class="px-6 py-3 text-align text-base font-medium text-white uppercase tracking-wider">
+                Filial
               </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Cód.
+              <th scope="col" class="px-6 py-3 text-align text-base font-medium text-white uppercase tracking-wider">
+                Cód.
                 Filial</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tipo
+              <th scope="col" class="px-6 py-3 text-align text-base font-medium text-white uppercase tracking-wider">
+                Tipo
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(dado, index) in dados.APIGEN.ITEM" :key="index">
+            <tr v-for="(dado, index) in paginatedItems" :key="index">
               <td class="px-6 py-4
               whitespace-nowrap text-sm text-gray-800">
-                {{ dado.E2_NUM || 'N/A' }}</td>
+                {{ Object.values(dado)[0] || '-' }}</td>
               <td class="px-6 py-4
               whitespace-nowrap text-sm text-gray-800">
-                {{ dado.E2_FILIAL || 'N/A' }}</td>
+                {{ Object.values(dado)[1] || '-' }}</td>
               <td class="px-6 py-4
               whitespace-nowrap text-sm text-gray-800">
-              {{ dado.E2_TIPO || 'N/A' }}</td>
+                {{ Object.values(dado)[2] || '-' }}</td>
             </tr>
           </tbody>
         </table>
-
+        <div v-if="!isLoading && (!dados.APIGEN || !dados.APIGEN.ITEM || dados.APIGEN.ITEM.length === 0) && !error"
+          class="empty-state">
+          Nenhum título a pagar carregado!
+        </div>
       </div>
-
-
-      <div v-if="!isLoading && dados.length === 0 && !error" class="empty-state">
-        Nenhum título a pagar carregado!
+      <div v-if="validateDate" class="mt-4 flex justify-between items-center">
+        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 border rounded-md text-sm font-medium
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+          Anterior
+        </button>
+        <span class="text-sm text-gray-700">
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
+        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 border rounded-md text-sm font-medium
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+          Próxima
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 
-<style scoped>
-/*
-.user-list-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  min-width: 100vh;
-}
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.data-table th,
-.data-table td {
-  padding: 12px 15px;
-  text-align: center;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.data-table th {
-  background-color: #42b983;
-  color: white;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-}
-
-.data-table tr:hover {
-  background-color: #f8f9fa;
-}
-
-.data-table tr:nth-child(even) {
-  background-color: #f8f9fa;
-}
-
-
-
-.user-list-content {
-  width: 100%;
-  max-width: 1200px;
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.title {
-  align-items: center;
-  color: #141414;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
-}
-
-
-
-.fetch-button {
-  background-color: #42b983;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin: 0 auto 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-
-.fetch-button:hover:not(:disabled) {
-  background-color: #3aa876;
-  transform: translateY(-2px);
-}
-
-
-.fetch-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.8;
-}
-
-
-.error-message {
-  color: #dc3545;
-  background-color: #f8d7da;
-  padding: 1rem;
-  border-radius: 6px;
-  margin: 0 auto 1.5rem;
-  max-width: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.retry-button {
-  background: none;
-  border: 1px solid #dc3545;
-  color: #dc3545;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-left: 0.5rem;
-}
-
-.retry-button:hover {
-  background-color: #dc3545;
-  color: white;
-}
-
-.user-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.user-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  text-align: center;
-  border: 1px solid #e9ecef;
-}
-
-.user-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-.user-card h3 {
-  margin: 0 0 1rem 0;
-  color: #2c3e50;
-  font-size: 1.25rem;
-}
-
-.user-card p {
-  margin: 0.5rem 0;
-  color: #6c757d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.fa-spinner {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  .user-list-container {
-    padding: 1rem;
-  }
-
-  .data-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .data-table th,
-  .data-table td {
-    padding: 8px 10px;
-  }
-
-  .user-list-content {
-    padding: 1.5rem;
-  }
-
-  .user-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .title {
-    font-size: 1.5rem;
-  }
-}
-  */
-</style>
+<style scoped></style>

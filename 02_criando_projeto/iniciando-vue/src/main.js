@@ -1,10 +1,14 @@
-import './assets/main.css'
+import { createApp } from 'vue';
+import PrimeVue from 'primevue/config';
+import Aura from '@primeuix/themes/aura';
+import App from './App.vue';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-
-// Cria uma instância do vue, que substitui o new Vue
 const app = createApp(App);
 
-// Renderiza e anexa o componente no DOM
-app.mount('#app')
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura
+    }
+});
+
+app.mount('#app');
