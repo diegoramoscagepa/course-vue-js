@@ -19,6 +19,16 @@ const router = createRouter({
       // Then the page will only be fully loaded when the user visits it
       component: () => import('../views/AboutView.vue'),
     },
+        {
+      path: '/titlepay',
+      name: 'titlepay',
+
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      // Then the page will only be fully loaded when the user visits it
+      component: () => import('../views/TitlePay.vue'),
+    }
   ],
 })
 
